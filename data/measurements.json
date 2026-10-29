@@ -1,1 +1,5 @@
-{"schemaVersion":"1.0","monitors":{},"incidents":[]}
+{
+  "schemaVersion": "1.0",
+  "monitors": {},
+  "incidents": []
+}
