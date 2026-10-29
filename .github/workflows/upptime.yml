@@ -1,0 +1,31 @@
+name: Upptime telemetry
+on:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: status-pipeline
+  cancel-in-progress: false
+jobs:
+  telemetry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # pinned release
+        with:
+          ref: main
+          persist-credentials: true
+      - id: sites
+        run: node -e 'const fs=require("fs"); fs.appendFileSync(process.env.GITHUB_OUTPUT,"enabled="+(JSON.parse(fs.readFileSync(".upptimerc.yml")).sites.length>0)+"\n")'
+      - if: steps.sites.outputs.enabled == 'true'
+        uses: upptime/uptime-monitor@74f0683383384927e064d76a5f21f340d6af36fc
+        with:
+          command: update
+        env:
+          GH_PAT: ${{ secrets.GITHUB_TOKEN }}
+# Supported Upptime config supplies endpoints/status/latency. Upptime issues and
+# comments are telemetry only; public feeds NEVER read them. No updater is run.

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "brand": { "name": "Service status", "publicUrl": "https://nikita-moshyn.github.io/service-status" },
+  "repository": { "owner": "nikita-moshyn", "name": "service-status", "branch": "main" },
+  "languages": ["en", "fr"],
+  "freshnessSeconds": 900,
+  "failureThreshold": 2,
+  "recoveryThreshold": 2,
+  "projects": [
+    { "id": "example-app", "name": "Example app", "url": "https://example.invalid" },
+    { "id": "second-app", "name": "Second app", "url": "https://example.invalid" }
+  ],
+  "components": [
+    { "id": "example-api", "name": "API", "projectIds": ["example-app"] },
+    { "id": "second-api", "name": "API", "projectIds": ["second-app"] },
+    { "id": "shared-auth", "name": "Authentication", "projectIds": ["example-app", "second-app"] }
+  ],
+  "monitors": [
+    { "id": "example-readiness", "name": "Example API readiness", "groupId": "example-api", "componentIds": ["example-api"], "url": "https://example.invalid/ready", "expectedStatus": 200, "expectedBody": "ready", "timeoutMs": 5000, "enabled": false },
+    { "id": "second-readiness", "name": "Second API readiness", "groupId": "second-api", "componentIds": ["second-api"], "url": "https://example.invalid/ready", "expectedStatus": 200, "expectedBody": "ready", "timeoutMs": 5000, "enabled": false },
+    { "id": "auth-readiness", "name": "Shared authentication readiness", "groupId": "shared-auth", "componentIds": ["shared-auth"], "url": "https://example.invalid/ready", "expectedStatus": 200, "expectedBody": "ready", "timeoutMs": 5000, "enabled": false }
+  ]
+}

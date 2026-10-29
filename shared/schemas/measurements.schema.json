@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://status.example/schemas/measurements.schema.json",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "monitors": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+      },
+      "maxProperties": 1000,
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "checkedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "latencyMs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "code": {
+            "enum": [
+              "ok",
+              "timeout",
+              "network_error",
+              "unexpected_response"
+            ]
+          },
+          "failureCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "successCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "availability": {
+            "enum": [
+              "operational",
+              "degraded",
+              "unavailable",
+              "unknown"
+            ]
+          },
+          "failureSince": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "checkedAt",
+          "ok",
+          "latencyMs",
+          "code",
+          "failureCount",
+          "successCount",
+          "availability",
+          "failureSince"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "incidents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+          },
+          "groupId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+          },
+          "componentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+            },
+            "maxItems": 100,
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "groupId",
+          "componentIds",
+          "startedAt",
+          "endedAt",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 20000
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "monitors",
+    "incidents"
+  ],
+  "additionalProperties": false
+}

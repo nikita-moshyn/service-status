@@ -1,0 +1,684 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://status.example/schemas/feed.schema.json",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "availability": {
+      "enum": [
+        "operational",
+        "degraded",
+        "unavailable",
+        "unknown"
+      ]
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "projectIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+            },
+            "maxItems": 100,
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "availability": {
+            "enum": [
+              "operational",
+              "degraded",
+              "unavailable",
+              "unknown"
+            ]
+          },
+          "messageCode": {
+            "enum": [
+              "operational",
+              "service_unavailable",
+              "service_degraded",
+              "unknown"
+            ]
+          },
+          "lastCheckedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "expiresAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "monitorIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+            },
+            "maxItems": 100
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "projectIds",
+          "availability",
+          "messageCode",
+          "lastCheckedAt",
+          "expiresAt",
+          "monitorIds"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 200
+    },
+    "incidents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+          },
+          "kind": {
+            "enum": [
+              "incident",
+              "maintenance"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "componentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+            },
+            "maxItems": 100,
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "phase": {
+            "enum": [
+              "investigating",
+              "identified",
+              "monitoring",
+              "resolved",
+              "scheduled",
+              "in_progress",
+              "completed",
+              "cancelled"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startsAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "endsAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "phase": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed",
+                    "cancelled"
+                  ]
+                },
+                "translations": {
+                  "type": "object",
+                  "maxProperties": 30,
+                  "propertyNames": {
+                    "pattern": "^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})*$"
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8000
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "at",
+                "phase",
+                "translations"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 200
+          },
+          "measurementActive": {
+            "type": "boolean"
+          },
+          "measurementEndedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean"
+          },
+          "messageCode": {
+            "enum": [
+              "service_unavailable",
+              "service_degraded",
+              "scheduled_maintenance",
+              "investigating",
+              "monitoring",
+              "resolved"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "componentIds",
+          "phase",
+          "createdAt",
+          "startsAt",
+          "endsAt",
+          "updates",
+          "measurementActive",
+          "measurementEndedAt",
+          "confirmed",
+          "messageCode",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 25000
+    },
+    "activeIncidents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+          },
+          "kind": {
+            "enum": [
+              "incident",
+              "maintenance"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "componentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+            },
+            "maxItems": 100,
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "phase": {
+            "enum": [
+              "investigating",
+              "identified",
+              "monitoring",
+              "resolved",
+              "scheduled",
+              "in_progress",
+              "completed",
+              "cancelled"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startsAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "endsAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "phase": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed",
+                    "cancelled"
+                  ]
+                },
+                "translations": {
+                  "type": "object",
+                  "maxProperties": 30,
+                  "propertyNames": {
+                    "pattern": "^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})*$"
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8000
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "at",
+                "phase",
+                "translations"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 200
+          },
+          "measurementActive": {
+            "type": "boolean"
+          },
+          "measurementEndedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean"
+          },
+          "messageCode": {
+            "enum": [
+              "service_unavailable",
+              "service_degraded",
+              "scheduled_maintenance",
+              "investigating",
+              "monitoring",
+              "resolved"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "componentIds",
+          "phase",
+          "createdAt",
+          "startsAt",
+          "endsAt",
+          "updates",
+          "measurementActive",
+          "measurementEndedAt",
+          "confirmed",
+          "messageCode",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 25000
+    },
+    "maintenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+          },
+          "kind": {
+            "enum": [
+              "incident",
+              "maintenance"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "componentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+            },
+            "maxItems": 100,
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "phase": {
+            "enum": [
+              "investigating",
+              "identified",
+              "monitoring",
+              "resolved",
+              "scheduled",
+              "in_progress",
+              "completed",
+              "cancelled"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startsAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "endsAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "phase": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed",
+                    "cancelled"
+                  ]
+                },
+                "translations": {
+                  "type": "object",
+                  "maxProperties": 30,
+                  "propertyNames": {
+                    "pattern": "^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})*$"
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8000
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "at",
+                "phase",
+                "translations"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 200
+          },
+          "measurementActive": {
+            "type": "boolean"
+          },
+          "measurementEndedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean"
+          },
+          "messageCode": {
+            "enum": [
+              "service_unavailable",
+              "service_degraded",
+              "scheduled_maintenance",
+              "investigating",
+              "monitoring",
+              "resolved"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "componentIds",
+          "phase",
+          "createdAt",
+          "startsAt",
+          "endsAt",
+          "updates",
+          "measurementActive",
+          "measurementEndedAt",
+          "confirmed",
+          "messageCode",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 5000
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "freshnessSeconds": {
+      "type": "integer",
+      "minimum": 300,
+      "maximum": 3600
+    },
+    "statusUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "maxLength": 2048
+    },
+    "sourceRevision": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9-]{1,64}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "project",
+    "availability",
+    "components",
+    "incidents",
+    "activeIncidents",
+    "maintenance",
+    "generatedAt",
+    "expiresAt",
+    "freshnessSeconds",
+    "statusUrl",
+    "sourceRevision"
+  ],
+  "additionalProperties": false
+}

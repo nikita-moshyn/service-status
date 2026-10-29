@@ -1,0 +1,16 @@
+{
+  "owner": "nikita-moshyn",
+  "repo": "service-status",
+  "user-agent": "nikita-moshyn",
+  "sites": [],
+  "skipDescriptionUpdate": true,
+  "skipTopicsUpdate": true,
+  "skipHomepageUpdate": true,
+  "workflowSchedule": {
+    "uptime": "17 4 * * *"
+  },
+  "status-website": {
+    "name": "Service status",
+    "baseUrl": "/service-status"
+  }
+}

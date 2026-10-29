@@ -1,0 +1,27 @@
+{
+  "name": "service-status",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/build.mjs",
+    "monitor": "node scripts/monitor.mjs",
+    "configure": "node scripts/configure-upptime.mjs",
+    "check": "npm test && npm run configure -- --check && npm run build",
+    "dev": "npm run build && python3 -m http.server 4174 --directory dist"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.5"
+  }
+}
