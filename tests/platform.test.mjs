@@ -269,6 +269,10 @@ test("only trusted triggers can publish; pull-request validation has no secrets 
     assert.ok(!workflow.includes(trigger));
   assert.ok(workflow.includes("ref: main"));
   assert.ok(workflow.includes("group: status-pipeline"));
+  // A re-run must deploy only its own artifact, never an older attempt's feed.
+  const artifactName = "github-pages-${{ github.run_id }}-${{ github.run_attempt }}";
+  assert.ok(workflow.includes(`name: ${artifactName}`));
+  assert.ok(workflow.includes(`artifact_name: ${artifactName}`));
   const ci = await readFile(
     new URL("../.github/workflows/ci.yml", import.meta.url),
     "utf8",

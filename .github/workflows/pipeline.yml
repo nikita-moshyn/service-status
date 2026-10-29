@@ -70,6 +70,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # pinned release
         with:
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: dist
           retention-days: 1
       - name: Recheck source immediately before deployment
@@ -78,3 +79,5 @@ jobs:
           test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # pinned release
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
